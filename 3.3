@@ -1,0 +1,26 @@
+%Final computational project
+%Fernando Figueroa 14175
+%Dario Marroquin 18269
+%Alejandra Samayoa 18064
+
+%Analyzing the cilinder
+
+%Giving values to the radius and electric field to get an idea
+R = 0.5
+E = 0.5
+
+%Intervals of the variables that were used
+t = 0:pi/100:2*pi
+s = 0:0.01:2
+l = 0:0.01:2
+
+%Operating the variables
+v = -(E.*s.*(1-(R./s).^2)).*cos(t)
+v1 = v+10
+
+%This is the graph of the solution 
+cylinder(v1)
+title('Voltaje')
+xlabel('X') 
+ylabel('Y') 
+zlabel('N')
