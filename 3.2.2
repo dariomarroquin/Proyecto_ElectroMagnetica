@@ -1,0 +1,95 @@
+clc; clf; clear;
+%Final computational project
+%Fernando Figueroa 14175
+%Dario Marroquin 18269
+%Alejandra Samayoa 18064
+%Exercise 3.2.2
+
+
+k=5; 
+A=3; 
+B =6; 
+P = (8.854187817)*(10.^(-12)); % constants that are still A mystery. 
+
+%--------------------------------------------------------------------------
+%Functions declared
+V0 = @(r,theta) r-r;
+V1 = @(r,theta) (k*B*A./(3*P.*r))-(k*B./(3*P))+((((2*k.*r.^2)./(15*P*B))-((2*k*A.^5)./(15*B*P.*r.^3))).*((3.*(cos(theta).^2))-1)); % Need thresholding here. 
+V2 = @(r,theta) ((k*B*(A-B))./(P*3.*r))+((2*k*((B.^5)-(A.^5))).*(((3.*(cos(theta).^2))-1))./(15*B*P.*(r.^3)));
+npts = 100;
+r0 = linspace(0,A,npts)';
+r1 = linspace(A,B,npts)';
+r2 = linspace(B,10,npts)';
+phi = linspace(0,2*pi, npts)';
+
+
+%--------------------------------------------------------------------------
+%Surface
+[R0, ~] = meshgrid(r0,phi); 
+[R1, ~] = meshgrid(r1,phi); 
+[R2, Phi] = meshgrid(r2,phi); 
+P0 = V0(R0,Phi);  
+P1 = V1(R1,Phi);  
+P2 = V2(R2,Phi);  
+
+%--------------------------------------------------------------------------
+%Electric Field
+[X0,Y0] = pol2cart(Phi,R0);
+[X1,Y1] = pol2cart(Phi,R1);
+[X2,Y2] = pol2cart(Phi,R2);
+
+%--------------------------------------------------------------------------
+%Electric Potential
+[EX0, EY0] = gradient(P0);
+EX0 = -EX0;
+EY0 = -EY0./R0;
+
+[EX1, EY1] = gradient(P1);
+EX1 = -EX1;
+EY1 = -EY1./R1;
+
+
+%--------------------------------------------------------------------------
+%Electric Potential
+[EX2, EY2] = gradient(P2);
+EX2 = -EX2;
+EY2 = -EY2./R2;
+
+DX0 = P*2.*EX0;
+DY0 = P*2.*EY0;
+
+DX1 = P*2.*EX1;
+DY1 = P*2.*EY1;
+
+DX2 = P*2.*EX2;
+DY2 = P*2.*EY2;
+
+%--------------------------------------------------------------------------
+%Graphics Matlab 2020
+nexttile
+surfc(X0,Y0,P0)
+hold on
+surfc(X1,Y1,P1)
+hold off
+hold on
+surfc(X2,Y2,P2)
+hold off
+title('Electric Potential')
+nexttile
+quiver(X0,Y0,EX0,EY0)
+hold on
+quiver(X1,Y1,EX1,EY1)
+hold off
+hold on
+quiver(X2,Y2,EX2,EY2)
+hold off
+title('Electric Field')
+nexttile
+contourf(X0,Y0,P0)
+hold on
+contourf(X1,Y1,P1)
+hold off
+hold on
+contourf(X2,Y2,P2)
+hold off
+title('Electric Potential')
