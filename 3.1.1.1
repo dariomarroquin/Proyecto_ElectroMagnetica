@@ -1,0 +1,60 @@
+clc; clf; clear;
+%Final computational project
+%Fernando Figueroa 14175
+%Dario Marroquin 18269
+%Alejandra Samayoa 18064
+%Exercise 3.1.1.1
+
+
+F = 0;
+N = 2;
+A = 1;
+B = 2;
+K =(8.854187817)*(10.^(-12));
+%Alternate value N 
+npts = 100;
+xt = linspace(0,A,npts)';
+yt = linspace(0,B,npts)';
+%Surface
+[X,Y] = meshgrid(xt,yt);
+
+
+for n = 1:N
+    %Integer in Y
+    fun = @(y) sin(n*pi*y./B).*(atan(y./A));
+    %Limit from 0 to B 
+    v0 = integral(fun,0,B);
+    v1 = 2./(B*sinh(n*pi*A./B));
+    Z = @(x,y) v0.*v1.*(sinh(n*pi*x./B)).*(sin(n*pi*y./B));
+    %Summary
+    P = Z(X,Y);
+    F = P+F;
+end
+
+
+%--------------------------------------------------------------------------
+%Finding Electric Field
+[FX,FY] = gradient(F); 
+FX = -FX;
+FY = -FY;
+FZ = ones(size(FX));
+
+%--------------------------------------------------------------------------
+%Charge Density
+[DX,DY] = gradient(gradient(F));
+DX = -K.*DX;
+DY = -K.*DY;
+D = DX+DY;
+
+%--------------------------------------------------------------------------
+%Graphics Matlab 2020
+tiledlayout(2,1)
+nexttile
+surf (X,Y,F);
+hold on
+quiver3(X,Y,F,FX,FY,FZ);
+hold off
+title('Potential and Electric Field')
+nexttile
+surf(X,Y,D)
+title('Charge Density')
