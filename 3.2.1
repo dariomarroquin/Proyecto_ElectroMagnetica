@@ -1,0 +1,71 @@
+clc; clf; clear;
+%Final computational project
+%Fernando Figueroa 14175
+%Dario Marroquin 18269
+%Alejandra Samayoa 18064
+%Exercise 3.2.1
+
+R = 2; 
+K = (8.854187817)*(10.^(-12));
+
+
+%--------------------------------------------------------------------------
+%Functions declared
+V0 = @(r,theta) (3.*r.*cos(theta)./(10*K))-((12.*(r.^3)./(35*K*(R.^2))).*((5.*((cos(theta)).^3)./2)-((3.*cos(theta))./2)));
+V1 = @(r,theta) (3.*(R.^3).*cos(theta)./(10*K.*(r.^2)))-((12*(R.^5)./(35*K*(r.^4))).*((5.*((cos(theta)).^3)./2)-((3.*cos(theta))./2)));
+
+npts = 50;
+r0 = linspace(0,R,npts)';
+r1 = linspace(R,10,npts)';
+phi = linspace(0,2*pi, npts)';
+
+
+%--------------------------------------------------------------------------
+%Surface
+[R0, ~] = meshgrid(r0,phi); 
+[R1, Phi] = meshgrid(r1,phi); 
+
+P0 = V0(R0,Phi);  
+P1 = V1(R1,Phi);  
+
+
+%--------------------------------------------------------------------------
+%Electric Potential
+[X0,Y0] = pol2cart(Phi,R0);
+[X1,Y1] = pol2cart(Phi,R1);
+
+%--------------------------------------------------------------------------
+%Electric Field
+[EX0, EY0] = gradient(P0);
+EX0 = -EX0;
+EY0 = -EY0./R0;
+EZ0 = ones(size(EX0));
+
+
+%--------------------------------------------------------------------------
+%Electric Potential
+[EX1, EY1] = gradient(P1);
+EX1 = -EX1;
+EY1 = -EY1./R1;
+
+
+%--------------------------------------------------------------------------
+%Graphics Matlab 2020
+nexttile
+surfc(X0,Y0,P0)
+hold on
+surfc(X1,Y1,P1)
+hold off
+title('Electric Potential')
+nexttile
+quiver(X0,Y0,EX0,EY0)
+hold on
+quiver(X1,Y1,EX1,EY1)
+hold off
+title('Electric Field')
+nexttile
+contourf(X0,Y0,P0)
+hold on
+contourf(X1,Y1,P1)
+hold off
+title('Electric Potential')
